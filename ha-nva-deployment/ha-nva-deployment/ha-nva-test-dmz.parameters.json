@@ -75,8 +75,8 @@
     },
     "virtualNetworkSettings": {
       "value": {
-        "name": "ha-nva-test-vnet",
-        "resourceGroup": "ha-nva-test-rg"
+        "name": "ha-nva-vnet",
+        "resourceGroup": "ha-nva-rg"
       }
     }
   }
