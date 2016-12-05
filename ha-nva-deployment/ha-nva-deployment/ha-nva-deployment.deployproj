@@ -25,17 +25,17 @@
   <Import Condition=" Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Deployment\1.1\DeploymentProject.targets') " Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Deployment\1.1\DeploymentProject.targets" />
   <!-- vertag<:>end -->
   <ItemGroup>
-    <Content Include="azuredeploy.json" />
-    <Content Include="azuredeploy.parameters.json" />
     <None Include="Deploy.ps1" />
     <None Include="Deployment.targets">
       <Visible>False</Visible>
     </None>
-    <None Include="ha-nva-test-dmz.parameters.json" />
-    <None Include="ha-nva-test-mgmt.parameters.json" />
-    <None Include="ha-nva-test-vnet.parameters.json" />
-    <None Include="ha-nva-test-web.parameters.json" />
-    <None Include="ha-nva-test-zoo.parameters.json" />
+    <None Include="extensions\install-docker.sh" />
+    <None Include="parameters\ha-nva-test-dmz.parameters.json" />
+    <None Include="parameters\ha-nva-test-mgmt.parameters.json" />
+    <None Include="parameters\ha-nva-test-udr.parameters.json" />
+    <None Include="parameters\ha-nva-test-vnet.parameters.json" />
+    <None Include="parameters\ha-nva-test-web.parameters.json" />
+    <None Include="parameters\ha-nva-test-zoo.parameters.json" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>
