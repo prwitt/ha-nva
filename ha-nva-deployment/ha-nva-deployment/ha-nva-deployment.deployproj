@@ -30,12 +30,14 @@
       <Visible>False</Visible>
     </None>
     <None Include="extensions\install-docker.sh" />
-    <None Include="parameters\ha-nva-test-dmz.parameters.json" />
-    <None Include="parameters\ha-nva-test-mgmt.parameters.json" />
-    <None Include="parameters\ha-nva-test-udr.parameters.json" />
-    <None Include="parameters\ha-nva-test-vnet.parameters.json" />
-    <None Include="parameters\ha-nva-test-web.parameters.json" />
-    <None Include="parameters\ha-nva-test-zoo.parameters.json" />
+    <None Include="parameters\ha-nva-dmz.parameters.json" />
+    <None Include="parameters\ha-nva-mgmt.parameters.json" />
+    <None Include="parameters\ha-nva-udr.parameters.json" />
+    <None Include="parameters\ha-nva-vnet.parameters.json" />
+    <None Include="parameters\ha-nva-web.parameters.json" />
+    <None Include="parameters\ha-nva2.parameters.json" />
+    <None Include="parameters\ha-nva1.parameters.json" />
+    <None Include="parameters\ha-nva-zoo.parameters.json" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>
