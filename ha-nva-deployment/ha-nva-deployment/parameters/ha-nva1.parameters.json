@@ -17,6 +17,7 @@
             "isPublic": "true",
             "subnetName": "dmz-external",
             "privateIPAllocationMethod": "dynamic",
+            "publicIPAllocationMethod": "static",
             "isPrimary": "true",
             "enableIPForwarding": false,
             "domainNameLabelPrefix": "",
