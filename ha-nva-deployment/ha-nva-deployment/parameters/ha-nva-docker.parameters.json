@@ -45,7 +45,7 @@
             "typeHandlerVersion": "1.5",
             "autoUpgradeMinorVersion": true,
             "settingsConfig": {
-              "fileUris": [ "https://raw.githubusercontent.com/mspnp/ha-nva/telmos/templates/extensions/install-docker.sh" ],
+              "fileUris": [ "https://raw.githubusercontent.com/mspnp/ha-nva/master/extensions/install-docker.sh" ],
               "commandToExecute": "sh install-docker.sh"
             },
             "protectedSettingsConfig": { }

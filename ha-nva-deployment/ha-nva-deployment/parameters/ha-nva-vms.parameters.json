@@ -45,7 +45,7 @@
         "osDisk": {
           "caching": "ReadWrite"
         },
-        "extensions": [],
+        "extensions": [ ],
         "availabilitySet": {
           "useExistingAvailabilitySet": "No",
           "name": "ha-nva-as"

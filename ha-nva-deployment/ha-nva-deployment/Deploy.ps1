@@ -9,7 +9,7 @@ param(
   [Parameter(Mandatory=$false)]
   $ResourceGroupName = "ha-nva-rg",
   [Parameter(Mandatory=$false)]
-  [ValidateSet("PIP","UDR","Infrastructure","Docker")]
+  [ValidateSet("PIP","UDR","UFW","Infrastructure","Docker")]
   $Mode = "Docker"
 )
 
@@ -33,6 +33,7 @@ $virtualNetworkTemplate = New-Object System.Uri -ArgumentList @($templateRootUri
 $loadBalancerTemplate = New-Object System.Uri -ArgumentList @($templateRootUri, "templates/buildingBlocks/loadBalancer-backend-n-vm/azuredeploy.json")
 $multiVMsTemplate = New-Object System.Uri -ArgumentList @($templateRootUri, "templates/buildingBlocks/multi-vm-n-nic-m-storage/azuredeploy.json")
 $udrTemplate = New-Object System.Uri -ArgumentList @($templateRootUri, "templates/buildingBlocks/userDefinedRoutes/azuredeploy.json")
+$ufwTemplate = New-Object System.Uri -ArgumentList @($templateRootUri, "templates/buildingBlocks/virtualMachine-extensions/azuredeploy.json")
 
 $virtualNetworkParametersFile = [System.IO.Path]::Combine($PSScriptRoot, "parameters\ha-nva-vnet.parameters.json")
 $webSubnetLoadBalancerAndVMsParametersFile = [System.IO.Path]::Combine($PSScriptRoot, "parameters\ha-nva-web.parameters.json")
@@ -40,6 +41,7 @@ $mgmtSubnetVMsParametersFile = [System.IO.Path]::Combine($PSScriptRoot, "paramet
 $nvaParametersFile = [System.IO.Path]::Combine($PSScriptRoot, "parameters\ha-nva-vms.parameters.json")
 $dockerParametersFile = [System.IO.Path]::Combine($PSScriptRoot, "parameters\ha-nva-docker.parameters.json")
 $udrParametersFile = [System.IO.Path]::Combine($PSScriptRoot, "parameters\ha-nva-udr.parameters.json")
+$udrParametersFile = [System.IO.Path]::Combine($PSScriptRoot, "parameters\ha-nva-ufw.parameters.json")
 
 # Login to Azure and select your subscription
 Login-AzureRmAccount -SubscriptionId $SubscriptionId | Out-Null
@@ -73,6 +75,12 @@ if($Mode -eq "PIP"){
 	$nic = Get-AzureRmNetworkInterface -ResourceGroupName $networkResourceGroup.ResourceGroupName -Name ha-nva-vm3-nic1
 	$nic.IpConfigurations[0].PublicIpAddress = $pip
 	Set-AzureRmNetworkInterface -NetworkInterface $nic
+}
+
+if($Mode -eq "UFW"){
+	Write-Host "Deploying UFW..."
+	New-AzureRmResourceGroupDeployment -Name "ra-ufw-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName `
+		-TemplateUri $ufwTemplate.AbsoluteUri -TemplateParameterFile $ufwParametersFile
 }
 
 if($Mode -eq "UDR"){
