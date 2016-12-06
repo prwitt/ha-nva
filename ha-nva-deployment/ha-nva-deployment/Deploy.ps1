@@ -9,7 +9,7 @@ param(
   [Parameter(Mandatory=$false)]
   $ResourceGroupName = "ha-nva-rg",
   [Parameter(Mandatory=$false)]
-  [ValidateSet("All","Infrastructure","Docker")]
+  [ValidateSet("PIP","UDR","Infrastructure","Docker")]
   $Mode = "Docker"
 )
 
@@ -37,46 +37,56 @@ $udrTemplate = New-Object System.Uri -ArgumentList @($templateRootUri, "template
 $virtualNetworkParametersFile = [System.IO.Path]::Combine($PSScriptRoot, "parameters\ha-nva-vnet.parameters.json")
 $webSubnetLoadBalancerAndVMsParametersFile = [System.IO.Path]::Combine($PSScriptRoot, "parameters\ha-nva-web.parameters.json")
 $mgmtSubnetVMsParametersFile = [System.IO.Path]::Combine($PSScriptRoot, "parameters\ha-nva-mgmt.parameters.json")
-$nva1ParametersFile = [System.IO.Path]::Combine($PSScriptRoot, "parameters\ha-nva1.parameters.json")
-$nva2ParametersFile = [System.IO.Path]::Combine($PSScriptRoot, "parameters\ha-nva2.parameters.json")
+$nvaParametersFile = [System.IO.Path]::Combine($PSScriptRoot, "parameters\ha-nva-vms.parameters.json")
 $zooParametersFile = [System.IO.Path]::Combine($PSScriptRoot, "parameters\ha-nva-zoo.parameters.json")
 $udrParametersFile = [System.IO.Path]::Combine($PSScriptRoot, "parameters\ha-nva-udr.parameters.json")
 
 # Login to Azure and select your subscription
 Login-AzureRmAccount -SubscriptionId $SubscriptionId | Out-Null
 
-if($Mode -eq "All" -Or $Mode -eq "Infrastructure"){
-	# Create the resource group
-	$networkResourceGroup = New-AzureRmResourceGroup -Name $ResourceGroupName -Location $Location
+# Create the resource group
+$networkResourceGroup = New-AzureRmResourceGroup -Name $ResourceGroupName -Location $Location
 
+if($Mode -eq "Infrastructure"){
 	Write-Host "Deploying virtual network..."
-	#New-AzureRmResourceGroupDeployment -Name "ra-vnet-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName `
-	#	-TemplateUri $virtualNetworkTemplate.AbsoluteUri -TemplateParameterFile $virtualNetworkParametersFile
+	New-AzureRmResourceGroupDeployment -Name "ra-vnet-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName `
+		-TemplateUri $virtualNetworkTemplate.AbsoluteUri -TemplateParameterFile $virtualNetworkParametersFile
 
 	Write-Host "Deploying load balancer and virtual machines in web subnet..."
-	#New-AzureRmResourceGroupDeployment -Name "ra-web-lb-vms-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName `
-	#	-TemplateUri $loadBalancerTemplate.AbsoluteUri -TemplateParameterFile $webSubnetLoadBalancerAndVMsParametersFile
+	New-AzureRmResourceGroupDeployment -Name "ra-web-lb-vms-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName `
+		-TemplateUri $loadBalancerTemplate.AbsoluteUri -TemplateParameterFile $webSubnetLoadBalancerAndVMsParametersFile
 
 	Write-Host "Deploying jumpbox in mgmt subnet..."
-	#New-AzureRmResourceGroupDeployment -Name "ra-mgmt-vms-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName `
-	#	-TemplateUri $multiVMsTemplate.AbsoluteUri -TemplateParameterFile $mgmtSubnetVMsParametersFile
+	New-AzureRmResourceGroupDeployment -Name "ra-mgmt-vms-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName `
+		-TemplateUri $multiVMsTemplate.AbsoluteUri -TemplateParameterFile $mgmtSubnetVMsParametersFile
 	
-	Write-Host "Deploying nva1..."
-	New-AzureRmResourceGroupDeployment -Name "ra-nva1-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName `
-		-TemplateUri $multiVMsTemplate.AbsoluteUri -TemplateParameterFile $nva1ParametersFile
-
-	Write-Host "Deploying nva2..."
-	New-AzureRmResourceGroupDeployment -Name "ra-nva1-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName `
-		-TemplateUri $multiVMsTemplate.AbsoluteUri -TemplateParameterFile $nva2ParametersFile
-
-
-	Write-Host "Deploying udr..."
-	#New-AzureRmResourceGroupDeployment -Name "ra-udr-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName `
-	#	-TemplateUri $udrTemplate.AbsoluteUri -TemplateParameterFile $udrParametersFile
+	Write-Host "Deploying nva vms..."
+	New-AzureRmResourceGroupDeployment -Name "ra-nva-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName `
+		-TemplateUri $multiVMsTemplate.AbsoluteUri -TemplateParameterFile $nvaParametersFile
 }
 
-if($Mode -eq "All" -Or $Mode -eq "Docker"){
+if($Mode -eq "Docker"){
 	Write-Host "Deploying docker vms..."
 	New-AzureRmResourceGroupDeployment -Name "ra-mgmt-vms-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName `
 		-TemplateUri $multiVMsTemplate.AbsoluteUri -TemplateParameterFile $zooParametersFile
+}
+
+if($Mode -eq "PIP"){
+	Write-Host "Deploying PIP..."
+	$pipName = $networkResourceGroup.ResourceGroupName + "-pip"
+	$pip = New-AzureRmPublicIpAddress -Name $pipName -ResourceGroupName $networkResourceGroup.ResourceGroupName -Location $Location -AllocationMethod Static
+
+	$nic = Get-AzureRmNetworkInterface -ResourceGroupName $networkResourceGroup.ResourceGroupName -Name ha-nva-vm1-nic1
+	$nic.IpConfigurations[0].PublicIpAddress = $pip
+	Set-AzureRmNetworkInterface -NetworkInterface $nic
+
+	$pip = Get-AzureRmPublicIpAddress -Name $pipName -ResourceGroupName $networkResourceGroup.ResourceGroupName
+
+	Write-Host "PIP address: "$pip.IpAddress
+}
+
+if($Mode -eq "UDR"){
+	Write-Host "Deploying UDR..."
+	New-AzureRmResourceGroupDeployment -Name "ra-udr-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName `
+		-TemplateUri $udrTemplate.AbsoluteUri -TemplateParameterFile $udrParametersFile
 }

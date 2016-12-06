@@ -6,7 +6,7 @@
       "value": {
         "namePrefix": "ha-nva",
         "computerNamePrefix": "nva",
-        "size": "Standard_DS1_v2",
+        "size": "Standard_DS2_v2",
         "osType": "linux",
         "adminUsername": "testuser",
         "adminPassword": "AweS0me@PW",
@@ -14,10 +14,9 @@
         "osAuthenticationType": "password",
         "nics": [
           {
-            "isPublic": "true",
+            "isPublic": "false",
             "subnetName": "dmz-external",
             "privateIPAllocationMethod": "dynamic",
-            "publicIPAllocationMethod": "static",
             "isPrimary": "true",
             "enableIPForwarding": false,
             "domainNameLabelPrefix": "",
@@ -46,23 +45,7 @@
         "osDisk": {
           "caching": "ReadWrite"
         },
-        "extensions": [
-          {
-            "name": "enable-iptables-routes",
-            "publisher": "Microsoft.OSTCExtensions",
-            "type": "CustomScriptForLinux",
-            "typeHandlerVersion": "1.5",
-            "autoUpgradeMinorVersion": true,
-            "settingsConfigMapperUri": "https://raw.githubusercontent.com/mspnp/template-building-blocks/master/templates/resources/Microsoft.Compute/virtualMachines/extensions/vm-extension-passthrough-settings-mapper.json",
-            "settingsConfig": {
-              "fileUris": [
-                "https://raw.githubusercontent.com/mspnp/template-building-blocks/master/templates/resources/Microsoft.Compute/virtualMachines/extensions/linux/enable-iptables-routes/enable-iptables-routes.sh"
-              ],
-              "commandToExecute": "bash enable-iptables-routes.sh public 10.0.1.100"
-            },
-            "protectedSettingsConfig": {}
-          }
-        ],
+        "extensions": [],
         "availabilitySet": {
           "useExistingAvailabilitySet": "No",
           "name": "ha-nva-as"
@@ -77,9 +60,9 @@
     },
     "buildingBlockSettings": {
       "value": {
-        "storageAccountsCount": 1,
-        "vmCount": 1,
-        "vmStartIndex": 1
+        "storageAccountsCount": 2,
+        "vmCount": 2,
+        "vmStartIndex": 2
       }
     }
   }
