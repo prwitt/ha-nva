@@ -14,13 +14,14 @@
         "osAuthenticationType": "password",
         "nics": [
           {
-            "isPublic": "false",
+            "isPublic": "true",
             "subnetName": "mgmt",
             "privateIPAllocationMethod": "dynamic",
+            "publicIPAllocationMethod": "dynamic",
             "isPrimary": "true",
             "enableIPForwarding": false,
             "domainNameLabelPrefix": "",
-            "dnsServers": [ ]
+            "dnsServers": []
           }
         ],
         "imageReference": {
@@ -30,42 +31,13 @@
           "version": "latest"
         },
         "dataDisks": {
-          "count": 1,
-          "properties": {
-            "diskSizeGB": 128,
-            "caching": "None",
-            "createOption": "Empty"
-          }
+          "count": 0,
+          "properties": { }
         },
         "osDisk": {
           "caching": "ReadWrite"
         },
-        "extensions": [
-          {
-            "name": "IaaSAntimalware",
-            "publisher": "Microsoft.Azure.Security",
-            "type": "IaaSAntimalware",
-            "typeHandlerVersion": "1.3",
-            "autoUpgradeMinorVersion": true,
-            "settingsConfigMapperUri": "https://raw.githubusercontent.com/mspnp/template-building-blocks/master/templates/resources/Microsoft.Compute/virtualMachines/extensions/vm-extension-passthrough-settings-mapper.json",
-            "settingsConfig": {
-              "AntimalwareEnabled": true,
-              "RealtimeProtectionEnabled": "true",
-              "ScheduledScanSettings": {
-                "isEnabled": "false",
-                "day": "7",
-                "time": "120",
-                "scanType": "Quick"
-              },
-              "Exclusions": {
-                "Extensions": "",
-                "Paths": "",
-                "Processes": ""
-              }
-            },
-            "protectedSettingsConfig": { }
-          }
-        ],
+        "extensions": [ ],
         "availabilitySet": {
           "useExistingAvailabilitySet": "No",
           "name": ""

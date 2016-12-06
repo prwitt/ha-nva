@@ -4,9 +4,9 @@
   "parameters": {
     "virtualMachinesSettings": {
       "value": {
-        "namePrefix": "ha-nva-zoo",
-        "computerNamePrefix": "zoo",
-        "size": "Standard_DS1_v2",
+        "namePrefix": "ha-nva",
+        "computerNamePrefix": "nva",
+        "size": "Standard_DS2_v2",
         "osType": "linux",
         "adminUsername": "testuser",
         "adminPassword": "AweS0me@PW",
@@ -15,12 +15,21 @@
         "nics": [
           {
             "isPublic": "false",
-            "subnetName": "dmz-internal",
+            "subnetName": "dmz-external",
             "privateIPAllocationMethod": "dynamic",
             "isPrimary": "true",
             "enableIPForwarding": false,
             "domainNameLabelPrefix": "",
-            "dnsServers": [ ]
+            "dnsServers": []
+          },
+          {
+            "isPublic": "false",
+            "subnetName": "dmz-internal",
+            "privateIPAllocationMethod": "dynamic",
+            "isPrimary": "false",
+            "enableIPForwarding": true,
+            "domainNameLabelPrefix": "",
+            "dnsServers": []
           }
         ],
         "imageReference": {
@@ -30,34 +39,16 @@
           "version": "latest"
         },
         "dataDisks": {
-          "count": 1,
-          "properties": {
-            "diskSizeGB": 128,
-            "caching": "None",
-            "createOption": "Empty"
-          }
+          "count": 0,
+          "properties": {}
         },
         "osDisk": {
           "caching": "ReadWrite"
         },
-        "extensions": [
-          {
-            "name": "docker-config-ext",
-            "settingsConfigMapperUri": "https://raw.githubusercontent.com/mspnp/template-building-blocks/master/templates/resources/Microsoft.Compute/virtualMachines/extensions/vm-extension-passthrough-settings-mapper.json",
-            "publisher": "Microsoft.OSTCExtensions",
-            "type": "CustomScriptForLinux",
-            "typeHandlerVersion": "1.5",
-            "autoUpgradeMinorVersion": true,
-            "settingsConfig": {
-              "fileUris": [ "https://raw.githubusercontent.com/mspnp/ha-nva/telmos/templates/extensions/install-docker.sh" ],
-              "commandToExecute": "sh install-docker.sh"
-            },
-            "protectedSettingsConfig": { }
-          }
-        ],
+        "extensions": [],
         "availabilitySet": {
           "useExistingAvailabilitySet": "No",
-          "name": "ha-nva-zoo-as"
+          "name": "ha-nva-as"
         }
       }
     },
@@ -69,8 +60,8 @@
     },
     "buildingBlockSettings": {
       "value": {
-        "storageAccountsCount": 3,
-        "vmCount": 3,
+        "storageAccountsCount": 2,
+        "vmCount": 2,
         "vmStartIndex": 1
       }
     }

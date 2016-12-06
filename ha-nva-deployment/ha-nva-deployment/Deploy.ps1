@@ -38,7 +38,7 @@ $virtualNetworkParametersFile = [System.IO.Path]::Combine($PSScriptRoot, "parame
 $webSubnetLoadBalancerAndVMsParametersFile = [System.IO.Path]::Combine($PSScriptRoot, "parameters\ha-nva-web.parameters.json")
 $mgmtSubnetVMsParametersFile = [System.IO.Path]::Combine($PSScriptRoot, "parameters\ha-nva-mgmt.parameters.json")
 $nvaParametersFile = [System.IO.Path]::Combine($PSScriptRoot, "parameters\ha-nva-vms.parameters.json")
-$zooParametersFile = [System.IO.Path]::Combine($PSScriptRoot, "parameters\ha-nva-zoo.parameters.json")
+$dockerParametersFile = [System.IO.Path]::Combine($PSScriptRoot, "parameters\ha-nva-docker.parameters.json")
 $udrParametersFile = [System.IO.Path]::Combine($PSScriptRoot, "parameters\ha-nva-udr.parameters.json")
 
 # Login to Azure and select your subscription
@@ -62,13 +62,7 @@ if($Mode -eq "Infrastructure"){
 	
 	Write-Host "Deploying nva vms..."
 	New-AzureRmResourceGroupDeployment -Name "ra-nva-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName `
-		-TemplateUri $multiVMsTemplate.AbsoluteUri -TemplateParameterFile $nvaParametersFile
-}
-
-if($Mode -eq "Docker"){
-	Write-Host "Deploying docker vms..."
-	New-AzureRmResourceGroupDeployment -Name "ra-mgmt-vms-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName `
-		-TemplateUri $multiVMsTemplate.AbsoluteUri -TemplateParameterFile $zooParametersFile
+		-TemplateUri $multiVMsTemplate.AbsoluteUri -TemplateParameterFile $nvaParametersFile -Force
 }
 
 if($Mode -eq "PIP"){
@@ -76,17 +70,19 @@ if($Mode -eq "PIP"){
 	$pipName = $networkResourceGroup.ResourceGroupName + "-pip"
 	$pip = New-AzureRmPublicIpAddress -Name $pipName -ResourceGroupName $networkResourceGroup.ResourceGroupName -Location $Location -AllocationMethod Static
 
-	$nic = Get-AzureRmNetworkInterface -ResourceGroupName $networkResourceGroup.ResourceGroupName -Name ha-nva-vm1-nic1
+	$nic = Get-AzureRmNetworkInterface -ResourceGroupName $networkResourceGroup.ResourceGroupName -Name ha-nva-vm3-nic1
 	$nic.IpConfigurations[0].PublicIpAddress = $pip
 	Set-AzureRmNetworkInterface -NetworkInterface $nic
-
-	$pip = Get-AzureRmPublicIpAddress -Name $pipName -ResourceGroupName $networkResourceGroup.ResourceGroupName
-
-	Write-Host "PIP address: "$pip.IpAddress
 }
 
 if($Mode -eq "UDR"){
 	Write-Host "Deploying UDR..."
 	New-AzureRmResourceGroupDeployment -Name "ra-udr-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName `
 		-TemplateUri $udrTemplate.AbsoluteUri -TemplateParameterFile $udrParametersFile
+}
+
+if($Mode -eq "Docker"){
+	Write-Host "Deploying docker vms..."
+	New-AzureRmResourceGroupDeployment -Name "ra-docker-vms-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName `
+		-TemplateUri $multiVMsTemplate.AbsoluteUri -TemplateParameterFile $dockerParametersFile
 }
