@@ -11,29 +11,63 @@
             {
                 "monitorClass": "com.company.CustomProbeMonitor",
                 "settings": {
-                    "subscriptionId": "<azure_subscription_id>",
-                    "clientId": "<azure_service_principal_id>",
-                    "tenantId": "<azure_tenant_id>",
-                    "keyStorePath": "<path_to_keystore>",
-                    "keyStorePassword": "<keystore_password>",
-                    "certificatePassword": "<certificate_password>",
+                    "azure": {
+                        "subscriptionId": "<azure_subscription_id>",
+                        "servicePrincipal": {
+                            "clientId": "<azure_service_principal_id>",
+                            "tenantId": "<azure_tenant_id>",
+                            "keyStorePath": "<path_to_keystore>",
+                            "keyStorePassword": "<keystore_password>",
+                            "certificatePassword": "<certificate_password>"
+                        }
+                    },
                     "numberOfFailuresThreshold": 3,
-                    "publicIpAddress": "<public_ip_address_id>",
+                    "probeConnectTimeout": 3000,
                     "routeTables": [
                         "<route_table_1_id>",
                         "<route_table_2_id>"
                     ],
+                    "publicIpAddresses": [
+                        {
+                            "name": "nic1",
+                            "id": "<public_ip_address_id"
+                        }
+                    ]
                     "nvas": [
                         {
-                            "publicIpNetworkInterface": "<public_ip_address_network_interface>",
-                            "routeNetworkInterface": "<route_table_network_interface>",
+                            "networkInterfaces": [
+                                {
+                                    "name": "nic1",
+                                    "id": "<public_ip_address_network_interface>"
+                                },
+                                {
+                                    "name": "nic2",
+                                    "id": "<route_table_network_interface>"
+                                },
+                                {
+                                    "name": "nic3",
+                                    "id": "<route_table_network_interface>"
+                                }
+                            ],
                             "probeNetworkInterface": "<probe_network_interface>",
                             "probePort": 54321
                         },
                         {
-                            "publicIpNetworkInterface": "<public_ip_address_network_interface>",
-                            "routeNetworkInterface": "<route_table_network_interface>",
-                            "probeNetworkInterface": "probe_network_interface",
+                            "networkInterfaces": [
+                                {
+                                    "name": "nic1",
+                                    "id": "<public_ip_address_network_interface>"
+                                },
+                                {
+                                    "name": "nic2",
+                                    "id": "<route_table_network_interface>"
+                                },
+                                {
+                                    "name": "nic3",
+                                    "id": "<route_table_network_interface>"
+                                }
+                            ],
+                            "probeNetworkInterface": "<probe_network_interface>",
                             "probePort": 54321
                         }
                     ]

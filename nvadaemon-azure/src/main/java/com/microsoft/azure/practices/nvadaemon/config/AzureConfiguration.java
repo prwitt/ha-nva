@@ -41,10 +41,7 @@ public class AzureConfiguration {
         public ServicePrincipal(@JsonProperty("tenantId")String tenantId,
                                 @JsonProperty("clientId")String clientId,
                                 @JsonProperty("clientSecret")String clientSecret,
-                                @JsonProperty("clientCertificate")ClientCertificate clientCertificate,
-                                @JsonProperty("keyStorePath")String keyStorePath,
-                                @JsonProperty("keyStorePassword")String keyStorePassword,
-                                @JsonProperty("certificatePassword")String certificatePassword) {
+                                @JsonProperty("clientCertificate")ClientCertificate clientCertificate) {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(tenantId),
                 "tenantId cannot be null or empty");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(clientId),
