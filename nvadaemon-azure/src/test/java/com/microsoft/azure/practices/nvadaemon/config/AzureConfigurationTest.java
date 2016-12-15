@@ -1,5 +1,6 @@
 package com.microsoft.azure.practices.nvadaemon.config;
 
+import com.google.common.util.concurrent.Service;
 import com.microsoft.azure.practices.nvadaemon.config.AzureConfiguration.ServicePrincipal;
 import com.microsoft.azure.practices.nvadaemon.config.AzureConfiguration.ServicePrincipal.AuthenticationMode;
 import com.microsoft.azure.practices.nvadaemon.config.AzureConfiguration.ServicePrincipal.ClientCertificate;
@@ -26,6 +27,17 @@ public class AzureConfigurationTest {
             ()-> new AzureConfiguration("subscription-id", null));
     }
 
+    @Test
+    void test_subscription_id_and_service_principal() {
+        String subscriptionId = "subscription-id";
+        ServicePrincipal servicePrincipal = new ServicePrincipal("tenant-id",
+            "client-id", "client-secret", null);
+        AzureConfiguration azureConfiguration = new AzureConfiguration(subscriptionId,
+            servicePrincipal);
+        Assertions.assertEquals(subscriptionId, azureConfiguration.getSubscriptionId());
+        Assertions.assertEquals(servicePrincipal, azureConfiguration.getServicePrincipal());
+    }
+
     // ServicePrincipal tests
     @Test
     void test_null_tenant_id() {
@@ -49,6 +61,18 @@ public class AzureConfigurationTest {
     void test_empty_client_id() {
         Assertions.assertThrows(IllegalArgumentException.class,
             ()-> new ServicePrincipal("tenant-id", "", null, null));
+    }
+
+    @Test
+    void test_tenant_id_and_client_id_and_client_secret() {
+        String tenantId = "tenant-id";
+        String clientId = "client-id";
+        String clientSecret = "client-secret";
+        ServicePrincipal servicePrincipal = new ServicePrincipal(tenantId,
+            clientId, clientSecret, null);
+        Assertions.assertEquals(tenantId, servicePrincipal.getTenantId());
+        Assertions.assertEquals(clientId, servicePrincipal.getClientId());
+        Assertions.assertEquals(clientSecret, servicePrincipal.getClientSecret());
     }
 
     // Client certificate tests
@@ -88,7 +112,35 @@ public class AzureConfigurationTest {
             () -> new ClientCertificate("keystore-path", "keystore-password", ""));
     }
 
+    @Test
+    void test_client_certificate() {
+        String keyStorePath = "keystore-path";
+        String keyStorePassword = "keystore-password";
+        String certificatePassword = "certificate-password";
+        ClientCertificate clientCertificate = new ClientCertificate(keyStorePath,
+            keyStorePassword, certificatePassword);
+        Assertions.assertEquals(keyStorePath, clientCertificate.getKeyStorePath());
+        Assertions.assertEquals(keyStorePassword, clientCertificate.getKeyStorePassword());
+        Assertions.assertEquals(certificatePassword, clientCertificate.getCertificatePassword());
+    }
+
     // AuthenticationMode tests
+    @Test
+    void test_authentication_mode_values() {
+        AuthenticationMode[] values = AuthenticationMode.values();
+        Assertions.assertEquals(2, values.length);
+    }
+
+    @Test
+    void test_authentication_mode_value_of() {
+        String passwordValue = "PASSWORD";
+        String certificateValue = "CERTIFICATE";
+        AuthenticationMode password = AuthenticationMode.valueOf(passwordValue);
+        AuthenticationMode certificate = AuthenticationMode.valueOf(certificateValue);
+        Assertions.assertEquals(password, AuthenticationMode.PASSWORD);
+        Assertions.assertEquals(certificate, AuthenticationMode.CERTIFICATE);
+    }
+
     @Test
     void test_null_client_secret_and_null_client_certificate() {
         Assertions.assertThrows(IllegalArgumentException.class,
@@ -134,5 +186,13 @@ public class AzureConfigurationTest {
             servicePrincipal.getAuthenticationMode());
         Assertions.assertEquals(clientCertificate,
             servicePrincipal.getClientCertificate());
+    }
+
+    @Test
+    void test_client_secret_and_client_certificate() {
+        ClientCertificate clientCertificate =
+            new ClientCertificate("keystore-path", "keystore-password", "certificate-password");
+        Assertions.assertThrows(IllegalArgumentException.class,
+            ()-> new ServicePrincipal("tenant-id", "client-id", "client-secret", clientCertificate));
     }
 }

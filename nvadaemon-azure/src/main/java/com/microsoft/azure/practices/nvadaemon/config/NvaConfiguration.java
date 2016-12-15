@@ -27,6 +27,7 @@ public class NvaConfiguration implements ConfigurationValidation {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(probeNetworkInterface),
             "probeNetworkInterface cannot be null or empty");
         Preconditions.checkNotNull(probePort, "probePort must be specified");
+        Preconditions.checkArgument(probePort > 0, "probePort must be greater than 0");
         Preconditions.checkNotNull(networkInterfaces, "networkInterfaces cannot be null");
         if (networkInterfaces.size() == 0) {
             throw new IllegalArgumentException("networkInterfaces cannot be empty");
@@ -36,10 +37,16 @@ public class NvaConfiguration implements ConfigurationValidation {
         this.probePort = probePort;
         this.networkInterfaces = networkInterfaces;
         if (this.networkInterfaces.stream()
+            .map(n -> n.getName())
+            .distinct()
+            .count() != this.networkInterfaces.size()) {
+            throw new IllegalArgumentException("Duplicate network name found");
+        }
+        if (this.networkInterfaces.stream()
             .map(n -> n.getId())
             .distinct()
             .count() != this.networkInterfaces.size()) {
-            throw new IllegalArgumentException("Duplicate network interface found");
+            throw new IllegalArgumentException("Duplicate network id found");
         }
     }
 
