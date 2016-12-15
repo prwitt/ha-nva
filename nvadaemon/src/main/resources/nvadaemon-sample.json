@@ -1,12 +1,12 @@
 {
     "zookeeper": {
         "connectionString": "zookeeper:2181",
-        "retrySleepTimeMs": 1000,
+        "retrySleepTime": 1000,
         "numberOfRetries": 5,
         "leaderSelectorPath": "/leader-election"
     },
     "daemon": {
-        "shudownAwaitTimeMs": 10000,
+        "shutdownAwaitTime": 10000,
         "monitors": [
             {
                 "monitorClass": "com.company.CustomProbeMonitor",
