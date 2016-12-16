@@ -22,7 +22,7 @@ public class NvaDaemonConfigurationTest {
     @Test
     void test_null_zookeeper_configuration() {
         Assertions.assertThrows(NullPointerException.class,
-            ()-> new NvaDaemonConfiguration(null, null));
+            () -> new NvaDaemonConfiguration(null, null));
     }
 
     @Test
@@ -30,7 +30,7 @@ public class NvaDaemonConfigurationTest {
         ZookeeperConfiguration zookeeperConfiguration =
             new ZookeeperConfiguration("connection-string", "/leader-selector-path", null, null);
         Assertions.assertThrows(NullPointerException.class,
-            ()-> new NvaDaemonConfiguration(zookeeperConfiguration, null));
+            () -> new NvaDaemonConfiguration(zookeeperConfiguration, null));
     }
 
     @Test
@@ -51,7 +51,7 @@ public class NvaDaemonConfigurationTest {
     @Test
     void test_no_command_line_args() {
         Assertions.assertThrows(ConfigurationException.class,
-            ()-> NvaDaemonConfiguration.parseArguments(new String[] { }));
+            () -> NvaDaemonConfiguration.parseArguments(new String[] { }));
     }
 
     @Test

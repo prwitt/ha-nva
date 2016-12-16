@@ -7,13 +7,13 @@ public class ZookeeperConfigurationTest {
     @Test
     void test_null_connection_string() {
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new ZookeeperConfiguration(null, null, null, null));
+            () -> new ZookeeperConfiguration(null, null, null, null));
     }
 
     @Test
     void test_empty_connection_string() {
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new ZookeeperConfiguration("", null, null, null));
+            () -> new ZookeeperConfiguration("", null, null, null));
     }
 
     @Test

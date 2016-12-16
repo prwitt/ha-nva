@@ -10,49 +10,50 @@ import org.junit.jupiter.api.Test;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class NvaConfigurationTest {
     @Test
     void test_null_probe_network_interface() {
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new NvaConfiguration(null, null, null));
+            () -> new NvaConfiguration(null, null, null));
     }
 
     @Test
     void test_empty_probe_network_interface() {
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new NvaConfiguration("", null, null));
+            () -> new NvaConfiguration("", null, null));
     }
 
     @Test
     void test_null_probe_port() {
         Assertions.assertThrows(NullPointerException.class,
-            ()-> new NvaConfiguration("probe-network-interface", null, null));
+            () -> new NvaConfiguration("probe-network-interface", null, null));
     }
 
     @Test
     void test_zero_probe_port() {
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new NvaConfiguration("probe-network-interface", 0, null));
+            () -> new NvaConfiguration("probe-network-interface", 0, null));
     }
 
     @Test
     void test_negative_probe_port() {
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new NvaConfiguration("probe-network-interface", -1, null));
+            () -> new NvaConfiguration("probe-network-interface", -1, null));
     }
 
     @Test
     void test_null_network_interfaces() {
         Assertions.assertThrows(NullPointerException.class,
-            ()-> new NvaConfiguration("probe-network-interface", 1234, null));
+            () -> new NvaConfiguration("probe-network-interface", 1234, null));
     }
 
     @Test
     void test_empty_network_interfaces() {
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new NvaConfiguration("probe-network-interface", 1234, new ArrayList<>()));
+            () -> new NvaConfiguration("probe-network-interface", 1234, new ArrayList<>()));
     }
 
     @Test
@@ -61,7 +62,7 @@ public class NvaConfigurationTest {
         networkInterfaces.add(new NamedResourceId("nic1", "nic1-id"));
         networkInterfaces.add(new NamedResourceId("nic2", "nic1-id"));
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new NvaConfiguration("probe-network-interface", 1234, networkInterfaces));
+            () -> new NvaConfiguration("probe-network-interface", 1234, networkInterfaces));
     }
 
     @Test
@@ -70,9 +71,16 @@ public class NvaConfigurationTest {
         networkInterfaces.add(new NamedResourceId("nic1", "nic1-id"));
         networkInterfaces.add(new NamedResourceId("nic1", "nic2-id"));
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new NvaConfiguration("probe-network-interface", 1234, networkInterfaces));
+            () -> new NvaConfiguration("probe-network-interface", 1234, networkInterfaces));
     }
 
+    @Test
+    void test_validate_null_azure_client() {
+        NvaConfiguration nvaConfiguration = new NvaConfiguration("probe-network-interface",
+            1234, Arrays.asList(new NamedResourceId("nic1", "nic1-id")));
+        Assertions.assertThrows(NullPointerException.class,
+            () -> nvaConfiguration.validate(null));
+    }
     @Test
     void test_validate_invalid_network_interfaces() {
         AzureClient azureClient = mock(AzureClient.class);
@@ -97,7 +105,7 @@ public class NvaConfigurationTest {
             .thenReturn(true);
         when(azureClient.getNetworkInterfaceById(anyString()))
             .thenReturn(null);
-        Assertions.assertThrows(IllegalArgumentException.class,
+        Assertions.assertThrows(ConfigurationException.class,
             () -> nvaConfiguration.validate(azureClient));
     }
 

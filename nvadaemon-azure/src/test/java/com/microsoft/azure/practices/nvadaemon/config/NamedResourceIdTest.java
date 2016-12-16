@@ -10,25 +10,25 @@ public class NamedResourceIdTest {
     @Test
     void test_null_name() {
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new NamedResourceId(null, null));
+            () -> new NamedResourceId(null, null));
     }
 
     @Test
     void test_empty_name() {
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new NamedResourceId("", null));
+            () -> new NamedResourceId("", null));
     }
 
     @Test
     void test_null_id() {
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new NamedResourceId("name", null));
+            () -> new NamedResourceId("name", null));
     }
 
     @Test
     void test_empty_id() {
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new NamedResourceId("name", ""));
+            () -> new NamedResourceId("name", ""));
     }
 
     @Test

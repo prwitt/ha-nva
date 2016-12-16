@@ -12,19 +12,19 @@ public class AzureConfigurationTest {
     @Test
     void test_null_subscription_id() {
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new AzureConfiguration(null, null));
+            () -> new AzureConfiguration(null, null));
     }
 
     @Test
     void test_empty_subscription_id() {
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new AzureConfiguration("", null));
+            () -> new AzureConfiguration("", null));
     }
 
     @Test
     void test_null_service_principal() {
         Assertions.assertThrows(NullPointerException.class,
-            ()-> new AzureConfiguration("subscription-id", null));
+            () -> new AzureConfiguration("subscription-id", null));
     }
 
     @Test
@@ -42,25 +42,25 @@ public class AzureConfigurationTest {
     @Test
     void test_null_tenant_id() {
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new ServicePrincipal(null, null, null, null));
+            () -> new ServicePrincipal(null, null, null, null));
     }
 
     @Test
     void test_empty_tenant_id() {
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new ServicePrincipal("", null, null, null));
+            () -> new ServicePrincipal("", null, null, null));
     }
 
     @Test
     void test_null_client_id() {
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new ServicePrincipal("tenant-id", null, null, null));
+            () -> new ServicePrincipal("tenant-id", null, null, null));
     }
 
     @Test
     void test_empty_client_id() {
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new ServicePrincipal("tenant-id", "", null, null));
+            () -> new ServicePrincipal("tenant-id", "", null, null));
     }
 
     @Test
@@ -144,13 +144,13 @@ public class AzureConfigurationTest {
     @Test
     void test_null_client_secret_and_null_client_certificate() {
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new ServicePrincipal("tenant-id", "client-id", null, null));
+            () -> new ServicePrincipal("tenant-id", "client-id", null, null));
     }
 
     @Test
     void test_empty_client_secret_and_null_client_certificate() {
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new ServicePrincipal("tenant-id", "client-id", "", null));
+            () -> new ServicePrincipal("tenant-id", "client-id", "", null));
     }
 
     @Test
@@ -193,6 +193,6 @@ public class AzureConfigurationTest {
         ClientCertificate clientCertificate =
             new ClientCertificate("keystore-path", "keystore-password", "certificate-password");
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new ServicePrincipal("tenant-id", "client-id", "client-secret", clientCertificate));
+            () -> new ServicePrincipal("tenant-id", "client-id", "client-secret", clientCertificate));
     }
 }

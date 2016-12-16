@@ -10,14 +10,14 @@ public class DaemonConfigurationTest {
     @Test
     void test_null_monitors() {
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new DaemonConfiguration(null, null));
+            () -> new DaemonConfiguration(null, null));
     }
 
     @Test
     void test_empty_monitors() {
         List<MonitorConfiguration> monitors = new ArrayList<>();
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new DaemonConfiguration(monitors, null));
+            () -> new DaemonConfiguration(monitors, null));
     }
 
     @Test

@@ -10,13 +10,13 @@ public class MonitorConfigurationTest {
     @Test
     void test_null_monitor_class() {
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new MonitorConfiguration(null, null));
+            () -> new MonitorConfiguration(null, null));
     }
 
     @Test
     void test_empty_monitor_class() {
         Assertions.assertThrows(IllegalArgumentException.class,
-            ()-> new MonitorConfiguration("", null));
+            () -> new MonitorConfiguration("", null));
     }
 
     @Test

@@ -29,9 +29,6 @@ public class AzureConfiguration {
         private String tenantId;
         private String clientId;
         private String clientSecret;
-//        private String keyStorePath;
-//        private String keyStorePassword;
-//        private String certificatePassword;
         private ClientCertificate clientCertificate;
 
         @JsonIgnore
@@ -51,16 +48,14 @@ public class AzureConfiguration {
                 (clientCertificate == null))) {
                 throw new IllegalArgumentException("No authentication mode specified");
             } else if ((!Strings.isNullOrEmpty(clientSecret) &&
-                (clientCertificate == null))) {
+                (clientCertificate != null))) {
+                throw new IllegalArgumentException("Ambiguous authentication mode specified");
+            } else if (!Strings.isNullOrEmpty(clientSecret)) {
                 this.clientSecret = clientSecret;
                 this.authenticationMode = AuthenticationMode.PASSWORD;
-            } else if ((Strings.isNullOrEmpty(clientSecret) &&
-                (clientCertificate != null))) {
+            } else {
                 this.clientCertificate = clientCertificate;
                 this.authenticationMode = AuthenticationMode.CERTIFICATE;
-            }
-            else {
-                throw new IllegalArgumentException("Ambiguous authentication mode specified");
             }
 
             this.clientId = clientId;
